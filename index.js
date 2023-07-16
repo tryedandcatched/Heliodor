@@ -5,8 +5,10 @@ const client = new Client({
 	// All partials are loaded automatically
 });
 
+const token = prompt('Input Your Token: ');
+
 client.on('ready', async () => {
   console.log(`${client.user.username} is ready!`);
 })
 
-client.login('token');
+client.login(token);
