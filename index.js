@@ -72,6 +72,8 @@ client.on('messageCreate', async (msg) => {
 			if (me.permissionsIn(msg.channel).has(Permissions.FLAGS.ADD_REACTIONS)) {
 				msg.react(blacklistEmoji).catch(console.error);
 			}
+		} else {
+			msg.react(blacklistEmoji).catch(console.error);
 		}
 	}
 
@@ -124,9 +126,9 @@ client.on('messageCreate', async (msg) => {
 
 	if (command == "samsungStatus") {
 		if (args[0].toLowerCase() == "start") {
-			client.user.setSamsungActivity(args[1], 'START');
+			client.user.setSamsungActivity(args[1], 'START').catch(console.error);
 		} else if (args[0].toLowerCase() == "stop") {
-			client.user.setSamsungActivity(args[1], 'STOP');
+			client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
 		}
 	}
 
