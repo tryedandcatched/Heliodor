@@ -6,7 +6,9 @@ const BetterMarkDown = require('discord-bettermarkdown');
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
-	' ',
+	'',
+	' 	  [HELIODOR]',
+	'',
 	'░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░',
 	'░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░',
 	'░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░',
