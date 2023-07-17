@@ -66,7 +66,7 @@ commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
 	let commands = [ "Help (" + commandMap.size + ")\n" ];
 	commandMap.forEach((value, key) => {
 		if (value.desc == "") return;
-		commands.push(key + " - " + value.desc + "\n");
+		commands.push(key + " - " + value.desc + "\n").catch(console.error);
 	});
 	msg.channel.send(commands.join("")).catch(console.error);
 }});
@@ -146,7 +146,7 @@ client.on('messageCreate', async (msg) => {
 
 	commandMap.forEach((value, key) => {
 		if (command == key) {
-			value.func(msg, args);
+			value.func(msg, args).catch(console.error);
 		}
 	});
 
