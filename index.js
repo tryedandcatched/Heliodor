@@ -40,8 +40,9 @@ const client = new Client({
   fs.writeFile("UserID.txt", token, function(err) {
 	  if(err) {
 		  return console.log("Invalid UserID");
-	  }
+	  } else {
 	  console.log("UserID Saved successfully!");
+	  }
   });}
 
   function getToken(){
@@ -62,19 +63,20 @@ const client = new Client({
   fs.writeFile("token.txt", token, function(err) {
 	  if(err) {
 		  return console.log("Invalid Token");
-	  }
+	  } else {
 	  console.log("Token Saved successfully!");
+	  }
   });}
 
 
   fs.readFile('token.txt', function (err, data) {
-
+ if (data != null) {
 	console.log("Token Restored Successfully");
 
 	token = data;
-
-	if (err) throw err;
-	getToken();
+ }else
+	if (err) {
+	getToken(); }
  });
 
  fs.readFile('UserID.txt', function (err, data) {
