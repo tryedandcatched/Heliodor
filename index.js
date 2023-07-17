@@ -2,6 +2,44 @@ const prompt = require('prompt');
 const fs = require('fs');
 const { Client } = require('discord.js-selfbot-v13');
 
+let token = "";
+function getToken(){
+	prompt.start();
+	prompt.get([{
+	  	name: 'token',
+	  	hidden: true,
+	  	replace: '*',
+	  	conform: function (value) {
+			return true;
+	  	}
+	}], function (err, result) {
+		if(err) throw err
+  		token = result.token;
+		fs.writeFile("token.txt", token, function(err) {
+			if(err) {
+				console.error("Couldn't save file!");
+			} else {
+				console.log("Token Saved successfully!");
+				runClient();
+			}
+		});
+	});
+}
+
+fs.readFile('token.txt', function (err, data) {
+	if (err) {
+		getToken(); 
+		return;
+	}
+ 	if (data) {
+		console.log("Token Restored Successfully!");
+		token = data;
+		runClient();
+ 	} else {
+		getToken(); 
+	}
+});
+
 const client = new Client({
 	fetchAllMembers: false,
 	restTimeOffset: 0,
@@ -18,86 +56,17 @@ const client = new Client({
 	  },
 	  status: "online"
 	}
-  });
+});
 
-  let token = "";
-  let userID = "";
-  function getUserID(){
-	prompt.start();
-
-	prompt.get([{
-	  name: 'userID',
-	  hidden: false,
-	  replace: '*',
-	  conform: function (value) {
-		return true;
-	  }
-	}], function (err, result) {
-  
-	userID = result.userID;
-  });
-  
-  fs.writeFile("UserID.txt", token, function(err) {
-	  if(err) {
-		  return console.log("Invalid UserID");
-	  } else {
-	  console.log("UserID Saved successfully!");
-	  }
-  });}
-
-  function getToken(){
-	prompt.start();
-
-	prompt.get([{
-	  name: 'token',
-	  hidden: true,
-	  replace: '*',
-	  conform: function (value) {
-		return true;
-	  }
-	}], function (err, result) {
-  
-	token = result.token;
-  });
-  
-  fs.writeFile("token.txt", token, function(err) {
-	  if(err) {
-		  return console.log("Invalid Token");
-	  } else {
-	  console.log("Token Saved successfully!");
-	  }
-  });}
-
-
-  fs.readFile('token.txt', function (err, data) {
- if (data != null) {
-	console.log("Token Restored Successfully");
-
-	token = data;
- }else
-	if (err) {
-	getToken(); }
- });
-
- fs.readFile('UserID.txt', function (err, data) {
-	if (err) throw err;
-	getUserID();
-
-	console.log("UserID Restored Successfully");
-
-	UserId = data;
-
-
- });
-
-
-
-
-
+function runClient() {
+	if(token) {
+		client.login(token);
+	} else {
+		console.error("Invalid Token!");
+		getToken()
+	}
+}
 
 client.on('ready', async () => {
-  console.log(`${client.user.username} is ready!`);
-})
-if (token == String){client.login(token); 
-} else {console.log("Invalid Token, Contact Support.")}
-
+	console.log(`${client.user.username} is ready!`);
+});
