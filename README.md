@@ -3,9 +3,9 @@
 * Install Node.js
   - [Download](https://nodejs.org/en/download) & install
 * Setup Node packages
-  - Run `setup.bat`
+  - Open `cmd` and run `npm install prompt fs discord.js-selfbot-v13 gradient-string`
 * Run SelfBot
-  - Open `cmd` and run `node index.js`
+  - Open `cmd` in SelfBot directory and run `node index.js`
 ## How to contribute
 ### Creating new commands
 ```
