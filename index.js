@@ -146,7 +146,7 @@ client.on('messageCreate', async (msg) => {
 
 	commandMap.forEach((value, key) => {
 		if (command == key) {
-			value.func(msg, args).catch(console.error);
+			value.func(msg, args);
 		}
 	});
 
