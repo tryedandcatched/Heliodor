@@ -58,8 +58,67 @@ function runClient() {
 	}
 }
 
+const commandMap = new Map();
 const blacklist = [ ];
 let blacklistEmoji = "🤓";
+
+commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
+	let commands = [ "Help (" + commandMap.size + ")\n" ];
+	commandMap.forEach((value, key) => {
+		if (value.desc == "") return;
+		commands.push(key + " - " + value.desc + "\n");
+	});
+	msg.channel.send(commands.join("")).catch(console.error);
+}});
+
+commandMap.set("test", {desc: "Tests if selfbot is online", func: (msg, args) => {
+	msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
+	console.log("El Bot Est Functionele ✅");
+}});
+
+commandMap.set("hiddenmessage", {desc: "Sends hidden message (.hiddenmessage <hidden> <visible>)", func: (msg, args) => {
+	msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(console.error);
+}});
+
+commandMap.set("moyai", {desc: "Spams :moyai: x times (.moyai <amount>)", func: (msg, args) => {
+	for(let i = 0; i < args[0]; i++) {
+		msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
+	}
+}});
+
+commandMap.set("ocw", {desc: "", func: (msg, args) => {
+	if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") return;
+	const rand = Math.random() < 0.5;
+	if (rand == true) {
+		msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Oskar 🤑\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
+	} else {
+		msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Wasiluk 👹\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
+	}
+}});
+
+commandMap.set("blacklist", {desc: "Reacts with emoji to blacklisted people messages :angry: (.blacklist <add/remove/list/emoji> <id/emoji>)", func: (msg, args) => {
+	if (args[0].toLowerCase() == "add") {
+		blacklist[blacklist.length] = args[1];
+	} else if (args[0].toLowerCase() == "remove") {
+		blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
+	} else if (args[0].toLowerCase() == "list") {
+		msg.channel.send("Blacklisted ID's: " + blacklist);
+	} else if (args[0].toLowerCase() == "emoji") {
+		blacklistEmoji = args[1];
+	}
+}});
+
+commandMap.set("samsung", {desc: "Sets Samsung Activity (.samsung <start/stop> <package>)", func: (msg, args) => {
+	if (args[0].toLowerCase() == "start") {
+		client.user.setSamsungActivity(args[1], 'START').catch(console.error);
+	} else if (args[0].toLowerCase() == "stop") {
+		client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
+	}
+}});
+
+commandMap.set("przerwatechniczna", {desc: "", func: (msg, args) => {
+	msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(console.error);
+}});
 
 client.on('ready', async () => {
 	console.log(`${client.user.username} is ready!`);
@@ -85,55 +144,11 @@ client.on('messageCreate', async (msg) => {
 	const args = msg.content.trim().slice(1).split(' ');
 	const command = args.shift().toLowerCase();
 
-	if (command == "test") {
-		msg.delete().catch(console.error);
-		msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
-		console.log("El Bot Est Functionele ✅");
-	}
-
-	if (command == "ukrytawiadomosc")  {
-		msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(console.error);
-	}
-
-	if (command == "moyai") {
-		for(let i = 0; i < args[0]; i++) {
-			msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
+	commandMap.forEach((value, key) => {
+		if (command == key) {
+			value.func(msg, args);
 		}
-	}
-
-	if (command == "ocw") {
-		if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") return;
-		const rand = Math.random() < 0.5;
-		if (rand == true) {
-			msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Oskar 🤑\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
-		} else {
-			msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Wasiluk 👹\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
-		}
-	}
-	
-	if (command == "blacklist") {
-		if (args[0].toLowerCase() == "add") {
-			blacklist[blacklist.length] = args[1];
-		} else if (args[0].toLowerCase() == "remove") {
-			blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
-		} else if (args[0].toLowerCase() == "list") {
-			msg.channel.send("Blacklisted ID's: " + blacklist);
-		} else if (args[0].toLowerCase() == "emoji") {
-			blacklistEmoji = args[1];
-		}
-	}
-
-	if (command == "samsung") {
-		if (args[0].toLowerCase() == "start") {
-			client.user.setSamsungActivity(args[1], 'START').catch(console.error);
-		} else if (args[0].toLowerCase() == "stop") {
-			client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
-		}
-	}
-
-	if (command == "przerwatechniczna") {
-		msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(console.error);
-	}
+	});
 
 	msg.delete().catch(console.log);
 });
