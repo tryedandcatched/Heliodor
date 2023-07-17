@@ -2,8 +2,9 @@ const prompt = require('prompt');
 const fs = require('fs');
 const { Client, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
+const BetterMarkDown = require('discord-bettermarkdown');
+
 console.clear();
-// Use the same gradient on every line
 let duck = gradient('yellow', 'orange', 'red').multiline([
 	' ',
 	'░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░',
@@ -26,11 +27,6 @@ let duck = gradient('yellow', 'orange', 'red').multiline([
 ].join('\n'));
 console.log(duck);
 
-// Works with aliases
-gradient.atlas.multiline('Multi line\nstring');
-
-// Works with advanced options
-gradient('cyan', 'pink').multiline('Multi line\nstring', {interpolation: 'hsv'});
 let token = "";
 function getToken(){
 	prompt.start();
@@ -87,17 +83,20 @@ function runClient() {
 	}
 }
 
+const prefix = ".";
 const commandMap = new Map();
 const blacklist = [ ];
 let blacklistEmoji = "🤓";
 
 commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
-	let commands = [ "Help (" + commandMap.size + ")\n" ];
+	let commands = [ "**Help**\n\`\`\`ansi" ];
 	commandMap.forEach((value, key) => {
 		if (value.desc == "") return;
-		commands.push(key + " - " + value.desc + "\n");
+		const keyContent = "." + key.charAt(0).toUpperCase() + key.slice(1);
+		const content = value.desc + "\n";
+		commands.push(`\n${keyContent.bold + " - " + content.cyan.bgDarkBlue}`);
 	});
-	msg.channel.send(commands.join("")).catch(console.error);
+	msg.channel.send(commands.join("") + "\`\`\`").catch(console.error);
 }});
 
 commandMap.set("test", {desc: "Tests if selfbot is online", func: (msg, args) => {
@@ -105,11 +104,17 @@ commandMap.set("test", {desc: "Tests if selfbot is online", func: (msg, args) =>
 	console.log("El Bot Est Functionele ✅");
 }});
 
-commandMap.set("hiddenmessage", {desc: "Sends hidden message (.hiddenmessage <hidden> <visible>)", func: (msg, args) => {
+commandMap.set("prefix", {desc: "Change prefix (prefix <new_prefix>)", func: (msg, args) => {
+	if(args < 1) return;
+	prefix = args[0];
+	msg.channel.send("**Changed prefix to " + args[0] + "**");
+}});
+
+commandMap.set("hiddenmessage", {desc: "Sends hidden message (hiddenmessage <hidden> <visible>)", func: (msg, args) => {
 	msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(console.error);
 }});
 
-commandMap.set("moyai", {desc: "Spams :moyai: x times (.moyai <amount>)", func: (msg, args) => {
+commandMap.set("moyai", {desc: "Spams :moyai: x times (moyai <amount>)", func: (msg, args) => {
 	for(let i = 0; i < args[0]; i++) {
 		msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
 	}
@@ -125,23 +130,28 @@ commandMap.set("ocw", {desc: "", func: (msg, args) => {
 	}
 }});
 
-commandMap.set("blacklist", {desc: "Reacts with emoji to blacklisted people messages :angry: (.blacklist <add/remove/list/emoji> <id/emoji>)", func: (msg, args) => {
+commandMap.set("blacklist", {desc: "Reacts with emoji to blacklisted people messages :angry: (blacklist <add/remove/list/emoji> <id/emoji>)", func: (msg, args) => {
 	if (args[0].toLowerCase() == "add") {
 		blacklist[blacklist.length] = args[1];
+		msg.channel.send("**Successfully added " + args[1] + " to blacklist**");
 	} else if (args[0].toLowerCase() == "remove") {
 		blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
+		msg.channel.send("**Successfully removed " + args[1] + " from blacklist**");
 	} else if (args[0].toLowerCase() == "list") {
 		msg.channel.send("Blacklisted ID's: " + blacklist);
 	} else if (args[0].toLowerCase() == "emoji") {
 		blacklistEmoji = args[1];
+		msg.channel.send("**Successfully set blacklist emoji**");
 	}
 }});
 
-commandMap.set("samsung", {desc: "Sets Samsung Activity (.samsung <start/stop> <package>)", func: (msg, args) => {
+commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung <start/stop> <package>)", func: (msg, args) => {
 	if (args[0].toLowerCase() == "start") {
 		client.user.setSamsungActivity(args[1], 'START').catch(console.error);
+		msg.channel.send("**Successfully enabled Samsung Activity**");
 	} else if (args[0].toLowerCase() == "stop") {
 		client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
+		msg.channel.send("**Successfully disabled Samsung Activity**");
 	}
 }});
 
@@ -168,7 +178,7 @@ client.on('messageCreate', async (msg) => {
 	if (msg.author.bot) return;
 	if (!client.user.id.includes(msg.author.id)) return;
 	if (!msg.content) return;
-	if (!msg.content.startsWith(`.`)) return;
+	if (!msg.content.startsWith(prefix)) return;
 
 	const args = msg.content.trim().slice(1).split(' ');
 	const command = args.shift().toLowerCase();
