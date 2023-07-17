@@ -69,7 +69,9 @@ client.on('messageCreate', async (msg) => {
 	//if (!msg.content.startsWith(`.`)) return;
 	const args = msg.content.trim().slice(1).split(' ');
 	const command = args.shift().toLowerCase();
-
+	if (msg.author.id == "1074046811217592361" ||msg.author.id ==  "1128001417907556583" || msg.author.id == "1105386859124760638"){
+		msg.react("🤓")
+	}
 	if (command == "test") {
 		msg.delete();
 		msg.channel.send("**El Bot Est Functionele** ✅")
