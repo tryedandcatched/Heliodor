@@ -1,7 +1,36 @@
 const prompt = require('prompt');
 const fs = require('fs');
 const { Client, Permissions } = require('discord.js-selfbot-v13');
+const gradient = require('gradient-string');
+console.clear();
+// Use the same gradient on every line
+let duck = gradient('yellow', 'orange', 'red').multiline([
+	' ',
+	'░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░',
+	'░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░',
+	'░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░',
+	'░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░',
+	'░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░',
+	'█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█',
+	'█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█',
+	'░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░',
+	'░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░',
+	'░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░',
+	'░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░',
+	'░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░',
+	'░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░',
+	'░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░',
+	'░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░',
+	' '
+																 
+].join('\n'));
+console.log(duck);
 
+// Works with aliases
+gradient.atlas.multiline('Multi line\nstring');
+
+// Works with advanced options
+gradient('cyan', 'pink').multiline('Multi line\nstring', {interpolation: 'hsv'});
 let token = "";
 function getToken(){
 	prompt.start();
