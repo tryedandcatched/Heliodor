@@ -96,7 +96,6 @@ client.on('messageCreate', async (msg) => {
 	}
 
 	if (command == "moyai") {
-		msg.delete();
 		for(let i = 0; i < args[0]; i++) {
 			msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
 		}
@@ -124,7 +123,7 @@ client.on('messageCreate', async (msg) => {
 		}
 	}
 
-	if (command == "samsungStatus") {
+	if (command == "samsung") {
 		if (args[0].toLowerCase() == "start") {
 			client.user.setSamsungActivity(args[1], 'START').catch(console.error);
 		} else if (args[0].toLowerCase() == "stop") {
@@ -135,4 +134,6 @@ client.on('messageCreate', async (msg) => {
 	if (command == "przerwatechniczna") {
 		msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(console.error);
 	}
+
+	msg.delete().catch(console.log);
 });
