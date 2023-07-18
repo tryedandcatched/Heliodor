@@ -1,8 +1,9 @@
 const prompt = require('prompt');
 const fs = require('fs');
-const { Client, WebEmbed, Permissions } = require('discord.js-selfbot-v13');
+const { Client, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
+const WebEmbed = require("./WebEmbed");
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
