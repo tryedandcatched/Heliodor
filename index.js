@@ -110,6 +110,7 @@ commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
 commandMap.set("test", {desc: "", func: (msg, args) => {
 	msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
 	console.log("El Bot Est Functionele ✅");
+	console.log(msg.channel.guild.id)
 }});
 
 commandMap.set("prefix", {desc: "Change prefix (prefix «new_prefix»)", func: (msg, args) => {
@@ -144,23 +145,44 @@ commandMap.set("trol", {desc: "", func: (msg, args) => {
 	msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(console.error);
 }});
 
-commandMap.set("userinfo", {desc: "Pulls info about a user. (uinfo «userid»)", func: (msg, args) => {
+commandMap.set("userinfo", {desc: "Pulls info about a user. (userinfo «user id/mention/empty»)", func: (msg, args) => {
 	const target = client.users.cache.find(user => user.id === args[0]) || client.users.cache.find(user => user.toString() === args[0]) || msg.author;
 	target.fetch().then(user => {
 		user.mutualFriends.then(mutualFriends => {
 			let createdAt = user.createdAt;
 			const embed =	new WebEmbed({shorten: true, hidden: true})
+				.setTitle(user.username)
 				.setAuthor({ name: "User Info", url: '' })
 				.setColor('#2b7a1d')
 				.setThumbnail(user.displayAvatarURL({dynamic: true}))
-				.setDescription('User: ' + user.username + "\n" 			
-					+ "Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
+				.setDescription("Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
 					+ "Nitro type: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
 					+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
 					+ "Mutual Friends: " + mutualFriends.size +"\n"
 					+ "About Me:\n " + user.bio).toMessage();
 			embed.then((value) => msg.channel.send(value)).catch(console.error);
 		});
+	});
+}});
+
+commandMap.set("serverinfo", {desc: "Pulls info about a server. (serverinfo «server did/empty»)", func: (msg, args) => {
+	const target = client.guilds.cache.find(Guild => Guild.id === args[0]) || msg.channel.guild;
+	target.fetch().then(guild => {
+		guild.emojis.fetch().then(emojis => {
+			
+			let createdAt = guild.createdAt;
+			const embed =	new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: "Server Info", url: '' })
+				.setColor('#2b7a1d')
+				.setThumbnail(guild.iconURL({dynamic: true}))
+				.setTitle(guild.name)
+				.setDescription("Created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
+					+ "Members: " + guild.memberCount + "\n"
+					+ "Channels: " + /*user.mutualGuilds.size +*/ "\n"
+					+ "Emojis: " + emojis.size +"\n"
+					+ "Boost Level: " + guild.premiumTier).toMessage();
+			embed.then((value) => msg.channel.send(value)).catch(console.error);
+		})
 	});
 }});
 
