@@ -258,6 +258,33 @@ commandMap.set("przerwatechniczna", {desc: "", func: (msg, args) => {
 	msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(console.error);
 }});
 
+commandMap.set("blacklist", {desc: "Reacts with emoji to blacklisted people messages :angry: (blacklist «add/remove/list/emoji» «id/emoji»)", func: (msg, args) => {
+	if (args[0].toLowerCase() == "add") {
+		blacklist[blacklist.length] = args[1];
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Blacklist Add', url: '' })
+			.setColor('RED')
+			.setDescription("Successfully added " + args[1] + "!").toMessage();
+		embed.then((value) => msg.channel.send(value));
+	} else if (args[0].toLowerCase() == "remove") {
+		blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Blacklist Remove', url: '' })
+			.setColor('RED')
+			.setDescription("Successfully removed " + args[1] + "!").toMessage();
+		embed.then((value) => msg.channel.send(value));
+	} else if (args[0].toLowerCase() == "list") {
+		msg.channel.send("Blacklisted ID's: " + blacklist);
+	} else if (args[0].toLowerCase() == "emoji") {
+		blacklistEmoji = args[1];
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Blacklist Emoji', url: '' })
+			.setColor('RED')
+			.setDescription("Successfully changed emoji to " + args[1]).toMessage();
+		embed.then((value) => msg.channel.send(value));
+	}
+}});
+
 client.on('ready', async () => {
 	console.log(`${client.user.username} is ready!`);
 });
