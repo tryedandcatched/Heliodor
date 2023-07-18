@@ -1,9 +1,8 @@
 const prompt = require('prompt');
 const fs = require('fs');
-const { Client, Permissions } = require('discord.js-selfbot-v13');
+const { Client, WebEmbed, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
-const WebEmbed = require("./WebEmbed");
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -92,96 +91,178 @@ const blacklist = [ ];
 let blacklistEmoji = "🤓";
 
 commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
-	let commands = [ "**Help**\n\`\`\`ansi" ];
+	let commands = [ "" ];
 
 	commandMap.forEach((value, key) => {
 		if (value.desc == "") return;
 		const keyContent = "." + key.charAt(0).toUpperCase() + key.slice(1);
 		const content = value.desc + "\n";
-		commands.push(`\n${keyContent.bold + " - " + content.cyan.bgDarkBlue}`);
+		commands.push(`\n${keyContent + " - " + content}`);
 	});
-	msg.channel.send(commands.join("") + "\`\`\`").catch(console.error);
+	const embed = new WebEmbed({shorten: true, hidden: true})
+
+	.setAuthor({ name: 'Help', url: '' })
+	.setColor('GREEN')
+	.setDescription(commands.join("")).toMessage()
+
+	embed.then((value) => msg.channel.send(value));
 }});
 
-commandMap.set("test", {desc: "Tests if selfbot is online", func: (msg, args) => {
+commandMap.set("test", {desc: "", func: (msg, args) => {
 	msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
 	console.log("El Bot Est Functionele ✅");
 }});
 
-commandMap.set("prefix", {desc: "Change prefix (prefix <new_prefix>)", func: (msg, args) => {
-	if(args < 1) return;
-	prefix = args[0];
-	msg.channel.send("**Changed prefix to " + args[0] + "**");
+commandMap.set("prefix", {desc: "Change prefix (prefix «new_prefix»)", func: (msg, args) => {
+	if(args < 1){ {
+	embed == new WebEmbed({shorten: false, hidden: true})
+
+	.setAuthor({ name: 'Syntax Error!', url: '' })
+	.setColor('GREEN')
+	.setDescription("Prefix Cannot Contain Spaces!").toMessage().catch(console.error) } 
+	msg
+	embed.then((value) => msg.channel.send(value)).catch(console.error); }else{
+
+	let prefix = args[0];
+
+	embed = new WebEmbed({shorten: false, hidden: true})
+
+	.setAuthor({ name: 'Prefix successfully changed!', url: '' })
+	.setColor('GREEN')
+	.setDescription("Changed prefix to " + args[0]).toMessage();
+	embed.then((value) => msg.channel.send(value)).catch(console.error);
+
+}
 }});
 
-commandMap.set("hiddenmessage", {desc: "Sends hidden message (hiddenmessage <hidden> <visible>)", func: (msg, args) => {
+commandMap.set("hm", {desc: "Sends hidden message (hm «hidden» «visible»)", func: (msg, args) => {
 	msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(console.error);
 }});
 
-commandMap.set("moyai", {desc: "Spams :moyai: x times (moyai <amount>)", func: (msg, args) => {
+commandMap.set("moyai", {desc: "Spams :moyai: x times (moyai «amount»)", func: (msg, args) => {
 	for(let i = 0; i < args[0]; i++) {
 		msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
 	}
 }});
+commandMap.set("trol", {desc: "", func: (msg, args) => {
+msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(console.error);
 
+}});
+commandMap.set("userinfo", {desc: "pulls info about a user. (uinfo «userid»)", func: (msg, args) => {
+	const target = client.users.cache.find(user => user.id === args[0]) ||client.users.cache.find(user => user.toString() === args[0]) || msg.author;
+	
+	console.log(args[0])
+
+	let fetchedUser = target.fetch()
+
+	fetchedUser.then(user => {
+		let mutualGuilds = target.mutualGuilds.size;
+		let mutualFriends = target.mutualFriends;
+		mutualFriends.then(mutualFriendsCount => {
+			embed =	new WebEmbed({shorten: true, hidden: true})
+			
+			.setAuthor({ name: "User Info", url: '' })
+			.setColor('#2b7a1d')
+			.setThumbnail(target.displayAvatarURL({dynamic: true}))
+			.setDescription('User: ' + target.username + "\n" 
+			
+				+ "Account created at: " + target.createdAt.getFullYear() + "/" + target.createdAt.getMonth() + "/" + target.createdAt.getDate()+ " " + target.createdAt.getHours() + ":" + target.createdAt.getMinutes() +"\n"
+				+ "Nitro type: " + target.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
+				+ "Mutual guilds: " + mutualGuilds + "\n"
+				+ "Mutual Friends: " + mutualFriendsCount.size +"\n"
+				+ "About Me:\n " + target.bio).toMessage().catch(console.error);
+	
+			embed.then((value) => msg.channel.send(value)).catch(console.error);
+		})
+
+	})
+
+
+	
+}
+
+		});
 commandMap.set("ocw", {desc: "", func: (msg, args) => {
-	if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") return;
+
 	const rand = Math.random() < 0.5;
-	if (rand == true) {
-		msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Oskar 🤑\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
-	} else {
-		msg.channel.send({ content: `**Oskar Czy Wasiluk**\n \`\`\`Wasiluk 👹\`\`\`\n Stawiales na: **` + args[0] +`**`}).catch(console.error);
-	}
+
+	if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") {
+
+		embed = new WebEmbed({shorten: true, hidden: true})
+
+	.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
+	.setColor('WHITE')
+	.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡').toMessage();
+
+	embed.then((value) => msg.channel.send(value));
+}else if (rand == true) {
+
+	embed = new WebEmbed({shorten: true, hidden: true})
+
+	  .setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+	  .setColor('RED')
+	  .setDescription('Oskar 🥵 \n Stawiales na ' + args[0]).toMessage().catch(console.error);
+	  embed.then((value) => msg.channel.send(value));
+} else {
+
+	embed = new WebEmbed({shorten: true, hidden: true})
+
+	  .setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+	  .setColor('BLUE')
+	  .setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]).toMessage().catch(console.error);
+	  embed.then((value) => msg.channel.send(value));
+}
 }});
 
-commandMap.set("blacklist", {desc: "Reacts with emoji to blacklisted people messages :angry: (blacklist <add/remove/list/emoji> <id/emoji>)", func: (msg, args) => {
-	if (args[0].toLowerCase() == "add") {
-		blacklist[blacklist.length] = args[1];
-		msg.channel.send("**Successfully added " + args[1] + " to blacklist**");
-	} else if (args[0].toLowerCase() == "remove") {
-		blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
-		msg.channel.send("**Successfully removed " + args[1] + " from blacklist**");
-	} else if (args[0].toLowerCase() == "list") {
-		msg.channel.send("Blacklisted ID's: " + blacklist);
-	} else if (args[0].toLowerCase() == "emoji") {
-		blacklistEmoji = args[1];
-		msg.channel.send("**Successfully set blacklist emoji**");
-	}
-}});
-
-commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung <start/stop> <package>)", func: (msg, args) => {
+commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung «start/stop» «package»)", func: (msg, args) => {
 	if (args[0].toLowerCase() == "start") {
+
 		client.user.setSamsungActivity(args[1], 'START').catch(console.error);
-		msg.channel.send("**Successfully enabled Samsung Activity**");
+		
+	embed = new WebEmbed({shorten: false, hidden: true})
+
+	.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
+	.setColor('GREEN')
+	.setDescription("Status set to " + args[1]).toMessage().catch(console.error);
+
+	embed.then((value) => msg.channel.send(value));
+
 	} else if (args[0].toLowerCase() == "stop") {
+
 		client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
-		msg.channel.send("**Successfully disabled Samsung Activity**");
+
+		embed = new WebEmbed({shorten: false, hidden: true})
+
+	.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
+	.setColor('RED')
+	.setDescription("Success!").toMessage().catch(console.error);
+	embed.then((value) => msg.channel.send(value));
 	}
 }});
 commandMap.set("nuke", {desc: "nukes the current server (you need admin permissions to use this)", func: (msg, args) => {
-	let channelPerms = msg.guild.me.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
-	let banPerms = msg.guild.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
-	let rolePerms = msg.guild.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
+	let channelPerms = msg.guild.members.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
+	let banPerms = msg.guild.members.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
+	let rolePerms = msg.guild.members.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
 	if (!banPerms || !rolePerms || !channelPerms) return;
 	let arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
 
-    msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
-        setTimeout(() => {
-        msg.edit("Banning...");
-            for (let i = 0; i < arrayOfIDs.length; i++) {
-                const user = arrayOfIDs[i];
-                const member = msg.guild.members.cache.get(user);
-                member.ban().catch((err) => { console.log(("Error Found: " + err)) }).then(() => { console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)) });
-            }
-        }, 2000);
+            msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
+                setTimeout(() => {
+                    msg.edit("Banning...");
+                    for (let i = 0; i < arrayOfIDs.length; i++) {
+                        const user = arrayOfIDs[i];
+                        const member = msg.guild.members.cache.get(user);
+                        member.ban().catch((err) => { console.log(("Error Found: " + err)) }).then(() => { console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)) });
+                    }
+                }, 2000);
     });
 	msg.guild.roles.cache.forEach((r) => r.delete().catch((err) => { console.log(("Error Found: " + err)) }))
 	for (let i = 0; i < 100; i++) {
-		msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((ch) => {
-			setInterval(() => {
-				ch.send("@everyone get nuked by wasiluk team");
-			}, 1); 
-		});
+	msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((ch) => {
+		setInterval(() => {
+			ch.send("@everyone get nuked by wasiluk team");
+		}, 1); 
+	});
 	}
 }});
 
@@ -210,7 +291,7 @@ client.on('messageCreate', async (msg) => {
 	if (!msg.content) return;
 	if (!msg.content.startsWith(prefix)) return;
 
-	const args = msg.content.trim().slice(1).split(' ');
+	const args = msg.content.trim().slice(prefix.length).split(' ');
 	const command = args.shift().toLowerCase();
 
 	commandMap.forEach((value, key) => {
