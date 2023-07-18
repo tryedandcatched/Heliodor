@@ -1,8 +1,9 @@
 const prompt = require('prompt');
 const fs = require('fs');
-const { Client, WebEmbed, Permissions } = require('discord.js-selfbot-v13');
+const { Client, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
+const WebEmbed = require('./WebEmbed');
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -85,13 +86,13 @@ function runClient() {
 	}
 }
 
-const prefix = ".";
+let prefix = ".";
 const commandMap = new Map();
 const blacklist = [ ];
 let blacklistEmoji = "🤓";
 
 commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
-	let commands = [ "" ];
+	let commands = [ ];
 
 	commandMap.forEach((value, key) => {
 		if (value.desc == "") return;
@@ -100,11 +101,9 @@ commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
 		commands.push(`\n${keyContent + " - " + content}`);
 	});
 	const embed = new WebEmbed({shorten: true, hidden: true})
-
-	.setAuthor({ name: 'Help', url: '' })
-	.setColor('GREEN')
-	.setDescription(commands.join("")).toMessage()
-
+		.setAuthor({ name: 'Help', url: '' })
+		.setColor('GREEN')
+		.setDescription(commands.join("")).toMessage();
 	embed.then((value) => msg.channel.send(value));
 }});
 
@@ -114,25 +113,21 @@ commandMap.set("test", {desc: "", func: (msg, args) => {
 }});
 
 commandMap.set("prefix", {desc: "Change prefix (prefix «new_prefix»)", func: (msg, args) => {
-	if(args < 1){ {
-	embed == new WebEmbed({shorten: false, hidden: true})
-
-	.setAuthor({ name: 'Syntax Error!', url: '' })
-	.setColor('GREEN')
-	.setDescription("Prefix Cannot Contain Spaces!").toMessage().catch(console.error) } 
-	msg
-	embed.then((value) => msg.channel.send(value)).catch(console.error); }else{
-
-	let prefix = args[0];
-
-	embed = new WebEmbed({shorten: false, hidden: true})
-
-	.setAuthor({ name: 'Prefix successfully changed!', url: '' })
-	.setColor('GREEN')
-	.setDescription("Changed prefix to " + args[0]).toMessage();
+	if(args < 1) {
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Syntax Error!', url: '' })
+			.setColor('GREEN')
+			.setDescription("Prefix Not Specified!").toMessage(); 
+		embed.then((value) => msg.channel.send(value)).catch(console.error);
+		return;
+	}
+		
+	prefix = args[0];
+	const embed = new WebEmbed({shorten: false, hidden: true})
+		.setAuthor({ name: 'Prefix successfully changed!', url: '' })
+		.setColor('GREEN')
+		.setDescription("Changed prefix to " + args[0]).toMessage();
 	embed.then((value) => msg.channel.send(value)).catch(console.error);
-
-}
 }});
 
 commandMap.set("hm", {desc: "Sends hidden message (hm «hidden» «visible»)", func: (msg, args) => {
@@ -144,125 +139,99 @@ commandMap.set("moyai", {desc: "Spams :moyai: x times (moyai «amount»)", func:
 		msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
 	}
 }});
+
 commandMap.set("trol", {desc: "", func: (msg, args) => {
-msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(console.error);
-
+	msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(console.error);
 }});
-commandMap.set("userinfo", {desc: "pulls info about a user. (uinfo «userid»)", func: (msg, args) => {
-	const target = client.users.cache.find(user => user.id === args[0]) ||client.users.cache.find(user => user.toString() === args[0]) || msg.author;
-	
-	console.log(args[0])
 
-	let fetchedUser = target.fetch()
-
-	fetchedUser.then(user => {
-		let mutualGuilds = target.mutualGuilds.size;
-		let mutualFriends = target.mutualFriends;
-		mutualFriends.then(mutualFriendsCount => {
-			embed =	new WebEmbed({shorten: true, hidden: true})
-			
-			.setAuthor({ name: "User Info", url: '' })
-			.setColor('#2b7a1d')
-			.setThumbnail(target.displayAvatarURL({dynamic: true}))
-			.setDescription('User: ' + target.username + "\n" 
-			
-				+ "Account created at: " + target.createdAt.getFullYear() + "/" + target.createdAt.getMonth() + "/" + target.createdAt.getDate()+ " " + target.createdAt.getHours() + ":" + target.createdAt.getMinutes() +"\n"
-				+ "Nitro type: " + target.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
-				+ "Mutual guilds: " + mutualGuilds + "\n"
-				+ "Mutual Friends: " + mutualFriendsCount.size +"\n"
-				+ "About Me:\n " + target.bio).toMessage().catch(console.error);
-	
+commandMap.set("userinfo", {desc: "Pulls info about a user. (uinfo «userid»)", func: (msg, args) => {
+	const target = client.users.cache.find(user => user.id === args[0]) || client.users.cache.find(user => user.toString() === args[0]) || msg.author;
+	target.fetch().then(user => {
+		user.mutualFriends.then(mutualFriends => {
+			let createdAt = user.createdAt;
+			const embed =	new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: "User Info", url: '' })
+				.setColor('#2b7a1d')
+				.setThumbnail(user.displayAvatarURL({dynamic: true}))
+				.setDescription('User: ' + user.username + "\n" 			
+					+ "Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
+					+ "Nitro type: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
+					+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
+					+ "Mutual Friends: " + mutualFriends.size +"\n"
+					+ "About Me:\n " + user.bio).toMessage();
 			embed.then((value) => msg.channel.send(value)).catch(console.error);
-		})
-
-	})
-
-
-	
-}
-
 		});
+	});
+}});
+
 commandMap.set("ocw", {desc: "", func: (msg, args) => {
-
 	const rand = Math.random() < 0.5;
-
 	if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") {
+		const embed = new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
+			.setColor('WHITE')
+			.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡').toMessage();
+		embed.then((value) => msg.channel.send(value));
+		return;
+	}
 
-		embed = new WebEmbed({shorten: true, hidden: true})
-
-	.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
-	.setColor('WHITE')
-	.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡').toMessage();
-
-	embed.then((value) => msg.channel.send(value));
-}else if (rand == true) {
-
-	embed = new WebEmbed({shorten: true, hidden: true})
-
-	  .setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
-	  .setColor('RED')
-	  .setDescription('Oskar 🥵 \n Stawiales na ' + args[0]).toMessage().catch(console.error);
-	  embed.then((value) => msg.channel.send(value));
-} else {
-
-	embed = new WebEmbed({shorten: true, hidden: true})
-
-	  .setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
-	  .setColor('BLUE')
-	  .setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]).toMessage().catch(console.error);
-	  embed.then((value) => msg.channel.send(value));
-}
+	if (rand == true) {
+		const embed = new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+			.setColor('RED')
+			.setDescription('Oskar 🥵 \n Stawiales na ' + args[0]).toMessage();
+		embed.then((value) => msg.channel.send(value));
+	} else {
+		const embed = new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+			.setColor('BLUE')
+			.setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]).toMessage();
+		embed.then((value) => msg.channel.send(value));
+	}
 }});
 
 commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung «start/stop» «package»)", func: (msg, args) => {
 	if (args[0].toLowerCase() == "start") {
-
 		client.user.setSamsungActivity(args[1], 'START').catch(console.error);
-		
-	embed = new WebEmbed({shorten: false, hidden: true})
-
-	.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
-	.setColor('GREEN')
-	.setDescription("Status set to " + args[1]).toMessage().catch(console.error);
-
-	embed.then((value) => msg.channel.send(value));
-
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
+			.setColor('GREEN')
+			.setDescription("Status set to " + args[1]).toMessage();
+		embed.then((value) => msg.channel.send(value));
 	} else if (args[0].toLowerCase() == "stop") {
-
 		client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
-
-		embed = new WebEmbed({shorten: false, hidden: true})
-
-	.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
-	.setColor('RED')
-	.setDescription("Success!").toMessage().catch(console.error);
-	embed.then((value) => msg.channel.send(value));
+		const embed = new WebEmbed({shorten: false, hidden: true})
+			.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
+			.setColor('RED')
+			.setDescription("Success!").toMessage();
+		embed.then((value) => msg.channel.send(value));
 	}
 }});
-commandMap.set("nuke", {desc: "nukes the current server (you need admin permissions to use this)", func: (msg, args) => {
+
+commandMap.set("nuke", {desc: "Nukes the current server (you need admin permissions to use this)", func: (msg, args) => {
 	let channelPerms = msg.guild.members.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
 	let banPerms = msg.guild.members.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
 	let rolePerms = msg.guild.members.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
 	if (!banPerms || !rolePerms || !channelPerms) return;
-	let arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
 
-            msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
-                setTimeout(() => {
-                    msg.edit("Banning...");
-                    for (let i = 0; i < arrayOfIDs.length; i++) {
-                        const user = arrayOfIDs[i];
-                        const member = msg.guild.members.cache.get(user);
-                        member.ban().catch((err) => { console.log(("Error Found: " + err)) }).then(() => { console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)) });
-                    }
-                }, 2000);
+	let arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
+	msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
+        setTimeout(() => {
+            msg.edit("Banning...");
+            for (let i = 0; i < arrayOfIDs.length; i++) {
+                const user = arrayOfIDs[i];
+                const member = msg.guild.members.cache.get(user);
+                member.ban().catch((err) => console.log(("Error Found: " + err))).then(() => console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)));
+            }
+        }, 2000);
     });
-	msg.guild.roles.cache.forEach((r) => r.delete().catch((err) => { console.log(("Error Found: " + err)) }))
+	msg.guild.roles.cache.forEach((r) => r.delete().catch((err) =>console.log(("Error Found: " + err))));
 	for (let i = 0; i < 100; i++) {
-	msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((ch) => {
-		setInterval(() => {
-			ch.send("@everyone get nuked by wasiluk team");
-		}, 1); 
-	});
+		msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((channel) => {
+			setInterval(() => {
+				channel.send("@everyone get nuked by wasiluk team");
+			}, 1); 
+		});
 	}
 }});
 
