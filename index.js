@@ -92,7 +92,7 @@ const blacklist = [ ];
 let blacklistEmoji = "🤓";
 
 commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
-	let commands = [ ];
+	const commands = [ ];
 
 	commandMap.forEach((value, key) => {
 		if (value.desc == "") return;
@@ -110,7 +110,6 @@ commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
 commandMap.set("test", {desc: "", func: (msg, args) => {
 	msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
 	console.log("El Bot Est Functionele ✅");
-	console.log(msg.channel.guild.id)
 }});
 
 commandMap.set("prefix", {desc: "Change prefix (prefix «new_prefix»)", func: (msg, args) => {
@@ -156,7 +155,7 @@ commandMap.set("userinfo", {desc: "Pulls info about a user. (userinfo «user id/
 				.setColor('#2b7a1d')
 				.setThumbnail(user.displayAvatarURL({dynamic: true}))
 				.setDescription("Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
-					+ "Nitro type: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
+					+ "Subscription: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
 					+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
 					+ "Mutual Friends: " + mutualFriends.size +"\n"
 					+ "About Me:\n " + user.bio).toMessage();
@@ -169,16 +168,14 @@ commandMap.set("serverinfo", {desc: "Pulls info about a server. (serverinfo «se
 	const target = client.guilds.cache.find(Guild => Guild.id === args[0]) || msg.channel.guild;
 	target.fetch().then(guild => {
 		guild.emojis.fetch().then(emojis => {
-			
-			let createdAt = guild.createdAt;
-			const embed =	new WebEmbed({shorten: true, hidden: true})
+			const createdAt = guild.createdAt;
+			const embed = new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: "Server Info", url: '' })
 				.setColor('#2b7a1d')
 				.setThumbnail(guild.iconURL({dynamic: true}))
 				.setTitle(guild.name)
 				.setDescription("Created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
 					+ "Members: " + guild.memberCount + "\n"
-					+ "Channels: " + /*user.mutualGuilds.size +*/ "\n"
 					+ "Emojis: " + emojis.size +"\n"
 					+ "Boost Level: " + guild.premiumTier).toMessage();
 			embed.then((value) => msg.channel.send(value)).catch(console.error);
@@ -231,12 +228,12 @@ commandMap.set("samsung", {desc: "Sets Samsung Activity (samsung «start/stop» 
 }});
 
 commandMap.set("nuke", {desc: "Nukes the current server (you need admin permissions to use this)", func: (msg, args) => {
-	let channelPerms = msg.guild.members.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
-	let banPerms = msg.guild.members.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
-	let rolePerms = msg.guild.members.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
+	const channelPerms = msg.guild.members.permissions.has("MANAGE_CHANNELS" || "ADMINISTRATOR");
+	const banPerms = msg.guild.members.me.permissions.has("BAN_MEMBERS" || "ADMINISTRATOR");
+	const rolePerms = msg.guild.members.me.permissions.has("MANAGE_ROLES" || "ADMINISTRATOR");
 	if (!banPerms || !rolePerms || !channelPerms) return;
 
-	let arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
+	const arrayOfIDs = msg.guild.members.cache.map((user) => user.id);
 	msg.reply("Found " + arrayOfIDs.length + " users.").then((msg) => {
         setTimeout(() => {
             msg.edit("Banning...");
