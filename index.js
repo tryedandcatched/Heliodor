@@ -1,9 +1,8 @@
 const prompt = require('prompt');
 const fs = require('fs');
-const { Client, Permissions } = require('discord.js-selfbot-v13');
+const { Client, WebEmbed, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
-const WebEmbed = require("./WebEmbed");
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -101,6 +100,18 @@ commandMap.set("help", {desc: "Sends a list of commands", func: (msg, args) => {
 		commands.push(`\n${keyContent.bold + " - " + content.cyan.bgDarkBlue}`);
 	});
 	msg.channel.send(commands.join("") + "\`\`\`").catch(console.error);
+	const embed = new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'hello', url: 'https://google.com' })
+			.setColor('RED')
+			.setDescription('description uh')
+			.setTitle('This is Title')
+			.setImage(
+				'https://cdn.discordapp.com/attachments/820557032016969751/959093026695835648/unknown.png',
+			)
+			.setVideo(
+				'https://cdn.discordapp.com/attachments/877060758092021801/957691816143097936/The_Quintessential_Quintuplets_And_Rick_Astley_Autotune_Remix.mp4',
+			).toMessage();
+	embed.then((value) => msg.channel.send(value));
 }});
 
 commandMap.set("test", {desc: "Tests if selfbot is online", func: (msg, args) => {
