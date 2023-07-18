@@ -88,8 +88,8 @@ function runClient() {
 
 let prefix = ".";
 const commands = [ ];
-const blacklist = [ ];
-let blacklistEmoji = "🤓";
+const reactlist = [ ];
+let emojis = [ "🤓" ];
 
 commands.push({
 	name: "help",
@@ -107,7 +107,7 @@ commands.push({
 			.setAuthor({ name: 'Help', url: '' })
 			.setColor('GREEN')
 			.setDescription(commandList.join("")).toMessage();
-		embed.then((value) => msg.channel.send(value));
+		embed.then((value) => msg.channel.send(value).catch(console.error));
 	}
 });
 
@@ -127,7 +127,7 @@ commands.push({
 	description: "Change prefix (prefix «new_prefix»)",
 	func: (msg, args) => {
 		if(args < 1) {
-			const embed = new WebEmbed({shorten: false, hidden: true})
+			const embed = new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Syntax Error!', url: '' })
 				.setColor('GREEN')
 				.setDescription("Prefix Not Specified!").toMessage(); 
@@ -136,7 +136,7 @@ commands.push({
 		}
 			
 		prefix = args[0];
-		const embed = new WebEmbed({shorten: false, hidden: true})
+		const embed = new WebEmbed({shorten: true, hidden: true})
 			.setAuthor({ name: 'Prefix successfully changed!', url: '' })
 			.setColor('GREEN')
 			.setDescription("Changed prefix to " + args[0]).toMessage();
@@ -233,7 +233,7 @@ commands.push({
 				.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
 				.setColor('WHITE')
 				.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡').toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 			return;
 		}
 
@@ -242,13 +242,13 @@ commands.push({
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
 				.setColor('RED')
 				.setDescription('Oskar 🥵 \n Stawiales na ' + args[0]).toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		} else {
 			const embed = new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
 				.setColor('BLUE')
 				.setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]).toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		}
 	}
 });
@@ -260,18 +260,18 @@ commands.push({
 	func: (msg, args) => {
 		if (args[0].toLowerCase() == "start") {
 			client.user.setSamsungActivity(args[1], 'START').catch(console.error);
-			const embed = new WebEmbed({shorten: false, hidden: true})
+			const embed = new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
 				.setColor('GREEN')
 				.setDescription("Status set to " + args[1]).toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		} else if (args[0].toLowerCase() == "stop") {
 			client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
-			const embed = new WebEmbed({shorten: false, hidden: true})
+			const embed = new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
 				.setColor('RED')
 				.setDescription("Success!").toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		}
 	}
 });
@@ -301,8 +301,8 @@ commands.push({
 		for (let i = 0; i < 100; i++) {
 			msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((channel) => {
 				setInterval(() => {
-					channel.send("@everyone get nuked by wasiluk team");
-				}, 1); 
+					channel.send("@everyone get nuked by wasiluk team").catch(console.error);
+				}, 100); 
 			});
 		}
 	}
@@ -323,28 +323,29 @@ commands.push({
 	description: "Reacts with emoji to listed people messages :angry: (reactlist «add/remove/list/emoji» «id/emojis»",
 	func: (msg, args) => {
 		if (args[0].toLowerCase() == "add") {
-			blacklist[blacklist.length] = args[1];
-			const embed = new WebEmbed({shorten: false, hidden: true})
-				.setAuthor({ name: 'Emoji List Add', url: '' })
-				.setColor('RED')
+			reactlist[reactlist.length] = args[1];
+			const embed = new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: 'React List Add', url: '' })
+				.setColor('GREEN')
 				.setDescription("Successfully added " + args[1] + "!").toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		} else if (args[0].toLowerCase() == "remove") {
-			blacklist.splice(blacklist.findIndex(indexed => indexed == args[1]), 1);
-			const embed = new WebEmbed({shorten: false, hidden: true})
-				.setAuthor({ name: 'Emoji List Remove', url: '' })
+			reactlist.splice(reactlist.findIndex(indexed => indexed == args[1]), 1);
+			const embed = new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: 'React List Remove', url: '' })
 				.setColor('RED')
 				.setDescription("Successfully removed " + args[1] + "!").toMessage();
-			embed.then((value) => msg.channel.send(value));
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		} else if (args[0].toLowerCase() == "list") {
-			msg.channel.send("Listed ID's: " + blacklist);
+			msg.channel.send("Listed ID's: " + reactlist).catch(console.error);
 		} else if (args[0].toLowerCase() == "emoji") {
-			blacklistEmoji = args[1];
-			const embed = new WebEmbed({shorten: false, hidden: true})
-				.setAuthor({ name: 'Emoji List Emoji', url: '' })
-				.setColor('RED')
-				.setDescription("Successfully changed emoji to " + args[1]).toMessage();
-			embed.then((value) => msg.channel.send(value));
+			args.shift();
+			emojis = args;
+			const embed = new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: 'React List Emoji', url: '' })
+				.setColor('BLUE')
+				.setDescription("Successfully changed emojis!").toMessage();
+			embed.then((value) => msg.channel.send(value).catch(console.error));
 		}
 	}
 });
@@ -354,14 +355,24 @@ client.on('ready', async () => {
 });
 
 client.on('messageCreate', async (msg) => {
-	if (blacklist.includes(msg.author.id)) {
+	if (reactlist.includes(msg.author.id)) {
 		if (msg.guild != null) {
 			let me = msg.guild.members.me;
 			if (me.permissionsIn(msg.channel).has(Permissions.FLAGS.ADD_REACTIONS)) {
-				msg.react(blacklistEmoji).catch(console.error);
+				emojis.forEach((value) => {
+					msg.react(value).catch((err) => { 
+						if(err.code == 10008) return;
+						console.log(err);
+					});
+				});
 			}
 		} else {
-			msg.react(blacklistEmoji).catch(console.error);
+			emojis.forEach((value) => {
+				msg.react(value).catch((err) => { 
+					if(err.code == 10008) return;
+					console.log(err);
+				});
+			});
 		}
 	}
 
