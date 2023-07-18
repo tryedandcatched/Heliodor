@@ -9,7 +9,12 @@
 ## How to contribute
 ### Creating new commands
 ```
-commandMap.set("command name", {desc: "command description", func: (msg, args) => {
-	// command code, msg = message sent, args = message arguments
-}});
+commands.push({
+  name: "command name",
+  aliases: [ "command alias 1", "command alias 2" ],
+  description: "command description",
+  func: (msg, args) => { // msg - message sent, args - message arguments
+    // command code
+  }
+});
 ```
