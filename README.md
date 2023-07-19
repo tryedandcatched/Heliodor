@@ -8,7 +8,7 @@
   - Open `cmd` in SelfBot directory and run `node index.js`
 ## How to contribute
 ### Creating new commands
-#### Inside index.js
+* Inside index.js
 ```
 commands.push({
   name: "command name",
@@ -19,7 +19,7 @@ commands.push({
   }
 });
 ```
-#### Externally
+* Externally
 Must be in `commands` directory!
 ```
 module.exports = {
