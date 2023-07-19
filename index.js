@@ -75,19 +75,34 @@ let emojis = [ "🤓" ];
 commands.push({
 	name: "help",
 	aliases: [ "help" ],
-	description: "Sends a list of commands",
+	description: "Sends a list of commands (help «page»)",
 	func: (msg, args) => {
 		const commandList = [ ];
-		commands.forEach(value => {
+		commands.forEach((value) => {
 			if (value.description == "") return;
 			const keyContent = prefix + value.name.charAt(0).toUpperCase() + value.name.slice(1);
 			const content = value.description + "\n";
 			commandList.push(`\n${keyContent + " - " + content}`);
 		});
+
+		let page = 1;
+		let maxPage = Math.ceil(commandList.join("").split("").length / 347); // webembed description max length = 347 characters
+		if (args.length >= 1)
+			if (!isNaN(parseInt(args[0])) && isFinite(args[0]))
+				page = parseInt(args[0]);
+		if (page > maxPage)
+			page = maxPage;
+
+		let pageContent = [  ];
+		commandList.join("").split(prefix).forEach((command) => {
+			if (page == Math.ceil((commandList.join("").indexOf(command) + command.length) / 347))
+				pageContent.push(command);
+		});
+
 		Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
-			.setAuthor({ name: 'Help', url: '' })
+			.setAuthor({ name: 'Help (' + page + '/' + maxPage + ')', url: '' })
 			.setColor('GREEN')
-			.setDescription(commandList.join("")));
+			.setDescription(pageContent.join("")));
 	}
 });
 
