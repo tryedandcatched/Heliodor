@@ -55,11 +55,28 @@ function retrieveToken() {
 }
 
 function loadExternalCommands(commandList) {
-    const files = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-    for (const file of files) {
-        const command = require("./commands/" + file);
-        commandList.push(command);
-    }
+    new Promise((resolve) => {
+        fs.access("./commands", fs.constants.F_OK, (err) => {
+            if(!err) {
+                resolve(true);
+                return;
+            }
+
+            error("Error while accessing commands directory!");
+            resolve(false);
+        });
+    }).then((value) => {
+        if(!value) {
+            error("Failed to load external commands");
+            return;
+        }
+
+        const files = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+        for (const file of files) {
+            const command = require("./commands/" + file);
+            commandList.push(command);
+        }
+    });
 }
 
 function log(msg, gradient) {
