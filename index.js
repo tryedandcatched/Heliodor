@@ -1,9 +1,8 @@
-const prompt = require('prompt');
-const fs = require('fs');
 const { Client, Permissions } = require('discord.js-selfbot-v13');
 const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
 const WebEmbed = require('./WebEmbed');
+const Util = require('./Util');
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -31,41 +30,14 @@ let duck = gradient('yellow', 'orange', 'red').multiline([
 console.log(duck);
 
 let token = "";
-function getToken(){
-	prompt.start();
-	prompt.get([{
-	  	name: 'token',
-	  	hidden: true,
-	  	replace: '*',
-	  	conform: function (value) {
-			return true;
-	  	}
-	}], function (err, result) {
-		if(err) throw err
-  		token = result.token;
-		fs.writeFile("token.txt", token, function(err) {
-			if(err) {
-				console.error("Couldn't save file!");
-			} else {
-				console.log("Token Saved successfully!");
-				runClient();
-			}
-		});
-	});
-}
-
-fs.readFile('token.txt', 'utf8', function (err, data) {
-	if (err) {
-		getToken(); 
+Util.retrieveToken().then((value) => {
+	if(value == null) {
+		Util.error("Failed to retrieve token!");
 		return;
 	}
- 	if (data != "") {
-		console.log("Token Restored Successfully!");
-		token = data;
-		runClient();
- 	} else {
-		getToken(); 
-	}
+
+	token = value;
+	runClient();
 });
 
 const client = new Client({
@@ -73,17 +45,26 @@ const client = new Client({
 });
 
 function runClient() {
-	if(token != "") {
-		client.login(token).catch(err => {
-			console.error(err);
-			if (err.code == "TOKEN_INVALID") {
-				getToken();
-			}
-		});
-	} else {
-		console.error("Invalid Token!");
-		getToken();
+	// IMPORTANT, DO NOT REMOVE
+	if(!Util.verifyCommands(commands)) {
+		Util.error("Failed to verify commands!");
+		return;
 	}
+
+	client.login(token).catch(err => {
+		Util.error(err);
+		if (err.code == "TOKEN_INVALID") {
+			Util.getToken().then((value) => {
+				if(value == null) {
+					Util.error("Failed to retrieve token");
+					return;
+				}
+
+				token = value;
+				runClient();
+			});
+		}
+	});
 }
 
 let prefix = ".";
@@ -103,11 +84,10 @@ commands.push({
 			const content = value.description + "\n";
 			commandList.push(`\n${keyContent + " - " + content}`);
 		});
-		const embed = new WebEmbed({shorten: true, hidden: true})
+		Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 			.setAuthor({ name: 'Help', url: '' })
 			.setColor('GREEN')
-			.setDescription(commandList.join("")).toMessage();
-		embed.then((value) => msg.channel.send(value).catch(console.error));
+			.setDescription(commandList.join("")));
 	}
 });
 
@@ -116,8 +96,8 @@ commands.push({
 	aliases: [ "test" ],
 	description: "",
 	func: (msg, args) => {
-		msg.channel.send("**El Bot Est Functionele** ✅").catch(console.error);
-		console.log("El Bot Est Functionele ✅");
+		msg.channel.send("**El Bot Est Functionele** ✅").catch(Util.error);
+		Util.good("El Bot Est Functionele ✅");
 	}
 });
 
@@ -127,20 +107,18 @@ commands.push({
 	description: "Change prefix (prefix «new_prefix»)",
 	func: (msg, args) => {
 		if(args < 1) {
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Syntax Error!', url: '' })
 				.setColor('GREEN')
-				.setDescription("Prefix Not Specified!").toMessage(); 
-			embed.then((value) => msg.channel.send(value)).catch(console.error);
+				.setDescription("Prefix Not Specified!")); 
 			return;
 		}
 			
 		prefix = args[0];
-		const embed = new WebEmbed({shorten: true, hidden: true})
+		Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 			.setAuthor({ name: 'Prefix successfully changed!', url: '' })
 			.setColor('GREEN')
-			.setDescription("Changed prefix to " + args[0]).toMessage();
-		embed.then((value) => msg.channel.send(value)).catch(console.error);
+			.setDescription("Changed prefix to " + args[0]));
 	}
 });
 
@@ -149,7 +127,7 @@ commands.push({
 	aliases: [ "hiddenmessage", "hm" ],
 	description: "Sends a hidden message (hiddenmessage «hidden» «visible»)",
 	func: (msg, args) => {
-		msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(console.error);
+		msg.channel.send(args[1]+"**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ " + args[0]).catch(Util.error);
 	}
 });
 
@@ -159,7 +137,7 @@ commands.push({
 	description: "Spams :moyai: x times (moyai «amount»)",
 	func: (msg, args) => {
 		for(let i = 0; i < args[0]; i++) {
-			msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(console.error);
+			msg.channel.send({ content: `🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿 🗿`}).catch(Util.error);
 		}
 	}
 });
@@ -169,7 +147,7 @@ commands.push({
 	aliases: [ "trol", "torl" ],
 	description: "",
 	func: (msg, args) => {
-		msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(console.error);
+		msg.channel.send({ content: `\`\`\`ansi\n`+`\n░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░`.red+`\n░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░`.red+`\n░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░`.red+`\n░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░`.red+`\n░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░`.red+`\n█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█`.red+`\n█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█`.red+`\n░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░`.red+`\n░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░`.red+`\n░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░`.red+`\n░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░`.red+`\n░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░`.red+`\n░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░`.red+`\n░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░`.red+`\n░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░`.red + `\`\`\``}).catch(Util.error);
 	}
 });
 
@@ -182,7 +160,7 @@ commands.push({
 		target.fetch().then(user => {
 			user.mutualFriends.then(mutualFriends => {
 				let createdAt = user.createdAt;
-				const embed =	new WebEmbed({shorten: true, hidden: true})
+				Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 					.setTitle(user.username)
 					.setAuthor({ name: "User Info", url: '' })
 					.setColor('#2b7a1d')
@@ -191,8 +169,7 @@ commands.push({
 						+ "Subscription: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
 						+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
 						+ "Mutual Friends: " + mutualFriends.size +"\n"
-						+ "About Me:\n " + user.bio).toMessage();
-				embed.then((value) => msg.channel.send(value)).catch(console.error);
+						+ "About Me:\n " + user.bio));
 			});
 		});
 	}
@@ -207,7 +184,7 @@ commands.push({
 		target.fetch().then(guild => {
 			guild.emojis.fetch().then(emojis => {
 				const createdAt = guild.createdAt;
-				const embed = new WebEmbed({shorten: true, hidden: true})
+				Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 					.setAuthor({ name: "Server Info", url: '' })
 					.setColor('#2b7a1d')
 					.setThumbnail(guild.iconURL({dynamic: true}))
@@ -215,8 +192,7 @@ commands.push({
 					.setDescription("Created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
 						+ "Members: " + guild.memberCount + "\n"
 						+ "Emojis: " + emojis.size +"\n"
-						+ "Boost Level: " + guild.premiumTier).toMessage();
-				embed.then((value) => msg.channel.send(value)).catch(console.error);
+						+ "Boost Level: " + guild.premiumTier));
 			})
 		});
 	}
@@ -229,26 +205,23 @@ commands.push({
 	func: (msg, args) => {
 		const rand = Math.random() < 0.5;
 		if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") {
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
 				.setColor('WHITE')
-				.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡').toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡'));
 			return;
 		}
 
 		if (rand == true) {
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
 				.setColor('RED')
-				.setDescription('Oskar 🥵 \n Stawiales na ' + args[0]).toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription('Oskar 🥵 \n Stawiales na ' + args[0]));
 		} else {
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
 				.setColor('BLUE')
-				.setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]).toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]));
 		}
 	}
 });
@@ -259,19 +232,17 @@ commands.push({
 	description: "Sets Samsung Activity (samsung «start/stop» «package»)",
 	func: (msg, args) => {
 		if (args[0].toLowerCase() == "start") {
-			client.user.setSamsungActivity(args[1], 'START').catch(console.error);
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			client.user.setSamsungActivity(args[1], 'START').catch(Util.error);
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
 				.setColor('GREEN')
-				.setDescription("Status set to " + args[1]).toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription("Status set to " + args[1]));
 		} else if (args[0].toLowerCase() == "stop") {
-			client.user.setSamsungActivity(args[1], 'STOP').catch(console.error);
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			client.user.setSamsungActivity(args[1], 'STOP').catch(Util.error);
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
 				.setColor('RED')
-				.setDescription("Success!").toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription("Success!"));
 		}
 	}
 });
@@ -293,15 +264,15 @@ commands.push({
 				for (let i = 0; i < arrayOfIDs.length; i++) {
 					const user = arrayOfIDs[i];
 					const member = msg.guild.members.cache.get(user);
-					member.ban().catch((err) => console.log(("Error Found: " + err))).then(() => console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)));
+					member.ban().catch((err) => Util.error(("Error Found: " + err))).then(() => console.log(gradient('yellow', 'orange', 'red').multiline(`${member.user.tag} was banned.`)));
 				}
 			}, 2000);
 		});
-		msg.guild.roles.cache.forEach((r) => r.delete().catch((err) =>console.log(("Error Found: " + err))));
+		msg.guild.roles.cache.forEach((r) => r.delete().catch((err) => Util.error(("Error Found: " + err))));
 		for (let i = 0; i < 100; i++) {
-			msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { console.log(("Error Found: " + err)) }).then((channel) => {
+			msg.guild.channels.create("L", { type: "GUILD_TEXT" }).catch((err) => { Util.error(("Error Found: " + err)) }).then((channel) => {
 				setInterval(() => {
-					channel.send("@everyone get nuked by wasiluk team").catch(console.error);
+					channel.send("@everyone get nuked by wasiluk team").catch(Util.error);
 				}, 100); 
 			});
 		}
@@ -313,7 +284,7 @@ commands.push({
 	aliases: [ "przerwatechniczna" ],
 	description: "",
 	func: (msg, args) => {
-		msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(console.error);
+		msg.channel.send("https://media.discordapp.net/attachments/978017797957378108/1028609201758556180/przerwa-techniczna.gif").catch(Util.error);
 	}
 });
 
@@ -324,34 +295,34 @@ commands.push({
 	func: (msg, args) => {
 		if (args[0].toLowerCase() == "add") {
 			reactlist[reactlist.length] = args[1];
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'React List Add', url: '' })
 				.setColor('GREEN')
-				.setDescription("Successfully added " + args[1] + "!").toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription("Successfully added " + args[1] + "!"));
 		} else if (args[0].toLowerCase() == "remove") {
 			reactlist.splice(reactlist.findIndex(indexed => indexed == args[1]), 1);
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'React List Remove', url: '' })
 				.setColor('RED')
-				.setDescription("Successfully removed " + args[1] + "!").toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription("Successfully removed " + args[1] + "!"));
 		} else if (args[0].toLowerCase() == "list") {
-			msg.channel.send("Listed ID's: " + reactlist).catch(console.error);
+			msg.channel.send("Listed ID's: " + reactlist).catch(Util.error);
 		} else if (args[0].toLowerCase() == "emoji") {
 			args.shift();
 			emojis = args;
-			const embed = new WebEmbed({shorten: true, hidden: true})
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'React List Emoji', url: '' })
 				.setColor('BLUE')
-				.setDescription("Successfully changed emojis!").toMessage();
-			embed.then((value) => msg.channel.send(value).catch(console.error));
+				.setDescription("Successfully changed emojis!"));
 		}
 	}
 });
 
+// IMPORTANT, DO NOT REMOVE
+Util.loadExternalCommands(commands);
+
 client.on('ready', async () => {
-	console.log(`${client.user.username} is ready!`);
+	Util.good(`${client.user.username} is ready!`);
 });
 
 client.on('messageCreate', async (msg) => {
@@ -362,7 +333,7 @@ client.on('messageCreate', async (msg) => {
 				emojis.forEach((value) => {
 					msg.react(value).catch((err) => { 
 						if(err.code == 10008) return;
-						console.log(err);
+						Util.error(err);
 					});
 				});
 			}
@@ -370,7 +341,7 @@ client.on('messageCreate', async (msg) => {
 			emojis.forEach((value) => {
 				msg.react(value).catch((err) => { 
 					if(err.code == 10008) return;
-					console.log(err);
+					Util.error(err);
 				});
 			});
 		}
@@ -392,5 +363,5 @@ client.on('messageCreate', async (msg) => {
 		});
 	});
 
-	msg.delete().catch(console.log);
+	msg.delete().catch(Util.error);
 });
