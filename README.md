@@ -20,7 +20,7 @@ commands.push({
 });
 ```
 * Externally
-Must be in `commands` directory!
+  - Must be in `commands` directory!
 ```
 module.exports = {
   name: "command name",
