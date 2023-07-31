@@ -126,8 +126,7 @@ commands.push({
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Syntax Error!', url: '' })
 				.setColor('GREEN')
-				.setDescription("Prefix Not Specified!"))
-				.setThumbnail(client.user.displayAvatarURL({dynamic: true}));
+				.setDescription("Prefix Not Specified!"));
 			return;
 		}
 			
@@ -135,8 +134,7 @@ commands.push({
 		Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 			.setAuthor({ name: 'Prefix successfully changed!', url: '' })
 			.setColor('GREEN')
-			.setDescription("Changed prefix to " + args[0]))
-			.setThumbnail(client.user.displayAvatarURL({dynamic: true}));
+			.setDescription("Changed prefix to " + args[0]));
 	}
 });
 commands.push({
@@ -252,8 +250,8 @@ commands.push({
 				Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 					.setProvider({ name: "Pulling info from: " + user.username, url: '' })
 					.setAuthor({ name: "User Info", url: '' })
-					.setColor('#2b7a1d')
-					.setThumbnail("")
+					.setColor('RANDOM')
+					.setThumbnail(user.displayAvatarURL())
 					.setDescription("Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
 						+ "Subscription: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
 						+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
