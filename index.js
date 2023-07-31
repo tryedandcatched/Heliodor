@@ -3,6 +3,7 @@ const gradient = require('gradient-string');
 const BetterMarkDown = require('discord-bettermarkdown');
 const WebEmbed = require('./WebEmbed');
 const Util = require('./Util');
+const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
 console.clear();
 let duck = gradient('yellow', 'orange', 'red').multiline([
@@ -119,13 +120,14 @@ commands.push({
 commands.push({
 	name: "prefix",
 	aliases: [ "prefix" ],
-	description: "Change prefix (prefix «new_prefix»)",
+	description: "Changes prefix (prefix «new_prefix»)",
 	func: (msg, args) => {
 		if(args < 1) {
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Syntax Error!', url: '' })
 				.setColor('GREEN')
-				.setDescription("Prefix Not Specified!")); 
+				.setDescription("Prefix Not Specified!"))
+				.setThumbnail(client.user.displayAvatarURL({dynamic: true}));
 			return;
 		}
 			
@@ -133,9 +135,81 @@ commands.push({
 		Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 			.setAuthor({ name: 'Prefix successfully changed!', url: '' })
 			.setColor('GREEN')
-			.setDescription("Changed prefix to " + args[0]));
+			.setDescription("Changed prefix to " + args[0]))
+			.setThumbnail(client.user.displayAvatarURL({dynamic: true}));
 	}
 });
+commands.push({
+	name: "friendlink",
+	aliases: [ "friendlink", "fl" ],
+	description: "creates a friend request link",
+	func: (msg, args) => {
+		client.user.createFriendInvite().then(flink => {
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+			.setProvider({ name: "Anyone That Clicks The Link Will Be Added To Your Friend List", url: '' })
+			.setAuthor({ name: 'Friend Request Successfully Link created!', url: '' })
+			.setColor('GOLD')
+			.setThumbnail("https://cdn.discordapp.com/attachments/1130849422402658415/1135163624848105582/6222-square-bug-hunter-gold.png")
+			.setDescription("https://discord.gg/" + flink.code));
+			sleep(1000).then(() => {
+				msg.channel.send("**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍**‍ https://discord.gg/" + flink.code).catch(Util.error);
+			  });
+			
+		});
+		
+	}
+});
+
+commands.push({
+	name: "hypersquad",
+	aliases: [ "hypersquad", "hs" ],
+	description: "Change hypersquad (hs «hypersquad»)",
+	func: (msg, args) => {
+		if(args < 1 || args[0] == null) {
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: 'Syntax Error!', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
+				.setColor('RED')
+				.setDescription("HyperSquad Not Specified!")); 
+				
+			return;
+		} else if (args[0] == "bravery" || args[0] == "1") {
+			client.user.setHypeSquad(1)
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+				.setAuthor({ name: 'HypeSquad Set!', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
+				.setColor('PURPLE')
+				.setThumbnail("https://cdn.discordapp.com/attachments/1130849422402658415/1135158527028101170/bravery_2.png")
+				.setDescription("Your hypesquad has been set to bravery!")); 
+		} else if (args[0] == "brilliance" || args[0] == "2") {
+			client.user.setHypeSquad(2)
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'HypeSquad Set!', url: '' })
+			.setProvider({ name: "Drubisz?", url: '' })
+			.setColor('RED')
+			.setThumbnail("https://cdn.discordapp.com/attachments/1130849422402658415/1135158820960739398/brilliance.png")
+			.setDescription("Your hypesquad has been set to brillance!")); 
+		} else if (args[0] == "balance" || args[0] == "3") {
+			client.user.setHypeSquad(3)
+			client.user.setHypeSquad(2)
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'HypeSquad Set!', url: '' })
+			.setProvider({ name: "Drubisz?", url: '' })
+			.setColor('GREEN')
+			.setThumbnail("https://cdn.discordapp.com/attachments/1130849422402658415/1135158527418187826/balance_2.png")
+			.setDescription("Your hypesquad has been set to balance!")); 
+		} else {
+			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+			.setAuthor({ name: 'Syntax Error!', url: '' })
+			.setProvider({ name: "Drubisz?", url: '' })
+			.setColor('RED')
+			.setThumbnail(client.user.displayAvatarURL({dynamic: true}))
+			.setDescription("Hypesquad Not Specified!")); 
+		return;
+		}
+	}
+});
+
 
 commands.push({
 	name: "hiddenmessage",
@@ -168,7 +242,7 @@ commands.push({
 
 commands.push({
 	name: "userinfo",
-	aliases: [ "userinfo", "uinfo" ],
+	aliases: [ "userinfo", "uinfo", "ui" ],
 	description: "Pulls informations about a user (userinfo «user id/mention/empty»)",
 	func: (msg, args) => {
 		const target = client.users.cache.find(user => user.id === args[0]) || client.users.cache.find(user => user.toString() === args[0]) || msg.author;
@@ -176,10 +250,10 @@ commands.push({
 			user.mutualFriends.then(mutualFriends => {
 				let createdAt = user.createdAt;
 				Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
-					.setTitle(user.username)
+					.setProvider({ name: "Pulling info from: " + user.username, url: '' })
 					.setAuthor({ name: "User Info", url: '' })
 					.setColor('#2b7a1d')
-					.setThumbnail(user.displayAvatarURL({dynamic: true}))
+					.setThumbnail("")
 					.setDescription("Account created at: " + createdAt.getFullYear() + "/" + createdAt.getMonth() + "/" + createdAt.getDate()+ " " + createdAt.getHours() + ":" + createdAt.getMinutes() + "\n"
 						+ "Subscription: " + user.nitroType.replace("NITRO_BOOST", "Nitro").replace("NITRO_CLASSIC", "Nitro Classic (kinda trash)").replace("NITRO_BASIC", "Nitro Basic (trash)").replace("NONE", "No Nitro") + "\n"
 						+ "Mutual guilds: " + user.mutualGuilds.size + "\n"
@@ -200,6 +274,7 @@ commands.push({
 			guild.emojis.fetch().then(emojis => {
 				const createdAt = guild.createdAt;
 				Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
+					.setProvider({ name: "Drubisz?", url: '' })
 					.setAuthor({ name: "Server Info", url: '' })
 					.setColor('#2b7a1d')
 					.setThumbnail(guild.iconURL({dynamic: true}))
@@ -222,6 +297,7 @@ commands.push({
 		if (args[0].toLowerCase() != "oskar" && args[0].toLowerCase() != "wasiluk") {
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Jestes gupi czy gupi?', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
 				.setColor('WHITE')
 				.setDescription('Mozesz stawiac tylko na oskar albo wasiluk 😡'));
 			return;
@@ -230,11 +306,13 @@ commands.push({
 		if (rand == true) {
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
 				.setColor('RED')
 				.setDescription('Oskar 🥵 \n Stawiales na ' + args[0]));
 		} else {
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Oskar Czy Wasiluk', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
 				.setColor('BLUE')
 				.setDescription('Wasiluk 🥶 \n Stawiales na ' + args[0]));
 		}
@@ -250,12 +328,14 @@ commands.push({
 			client.user.setSamsungActivity(args[1], 'START').catch(Util.error);
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Enabled!', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
 				.setColor('GREEN')
 				.setDescription("Status set to " + args[1]));
 		} else if (args[0].toLowerCase() == "stop") {
 			client.user.setSamsungActivity(args[1], 'STOP').catch(Util.error);
 			Util.sendWebEmbed(msg.channel, new WebEmbed({shorten: true, hidden: true})
 				.setAuthor({ name: 'Samsung Status Has Been Disabled!', url: '' })
+				.setProvider({ name: "Drubisz?", url: '' })
 				.setColor('RED')
 				.setDescription("Success!"));
 		}
